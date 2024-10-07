@@ -40,16 +40,6 @@ impl Service {
         }
     }
 
-    pub fn status(&self) -> Result<(), Error> {
-        let mut launchctl = Command::new(&self.launchctl_path);
-
-        launchctl
-            .args(vec!["print", &self.service_target])
-            .status()?;
-
-        Ok(())
-    }
-
     pub fn stop(&self) -> Result<(), Error> {
         let mut print = Command::new(&self.launchctl_path);
         print.args(vec!["print", &self.service_target]);
@@ -69,6 +59,7 @@ impl Service {
         Ok(())
     }
 
+    /// Attemps to start the service
     pub fn start(&self) -> Result<(), Error> {
         // print
         let mut print = Command::new(&self.launchctl_path);
@@ -88,23 +79,19 @@ impl Service {
 
         self.install()?;
 
-        // check if service is bootstrapped
+        // This print message checks if the service is not bootstrapped
         if !print.status()?.success() {
-            // There is no way to tell if the service is enabled or disabled, so we just call
-            // enable, and let it throw an error if the service is already enabled
-            enable.status()?;
-
-            // Bootstrap, this will autostart the service thanks to the plist property
-            bootstrap.status()?;
+            enable.status()?; // try to enable, if not already
+            bootstrap.status()?; // bootstrap the service
         } else {
-            // The service is bootstrapped, it can be started
-            kickstart.status()?;
+            kickstart.status()?; // restart the service
         }
 
         Ok(())
     }
 
     fn install(&self) -> Result<(), Error> {
+        // TODO find a ugly way to format this
         let plist = format!(
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
