@@ -1,8 +1,10 @@
 use std::{env, fs, io::Error, process::Command};
 
+/// Wrapper for the launchctl system command to manage the service
 #[derive(Debug)]
 #[allow(dead_code)]
 pub struct Service {
+    name: String,
     launchctl_path: String,
     service_target: String,
     domain_target: String,
@@ -12,14 +14,20 @@ pub struct Service {
     user: String,
     error_log_path: String,
     out_log_path: String,
-    name: String,
 }
 
 #[allow(dead_code)]
 impl Service {
     pub fn new() -> Self {
-        let user = env::var("USER").unwrap();
-        let home = env::var("HOME").unwrap();
+        let user = match env::var("USER") {
+            Ok(user) => user,
+            Err(_) => panic!("$USER environment variable not found, abort."),
+        };
+        let home = match env::var("HOME") {
+            Ok(home) => home,
+            Err(_) => panic!("$HOME environment variable not found, abort."),
+        };
+
         let name = "com.sylvanfranklin.srhd".to_string();
         let uid = "501".to_string();
 
@@ -40,20 +48,34 @@ impl Service {
         }
     }
 
+    // todo make this into an external struct, maybe even a library
+    fn launchctl_cmd(&self, args: Vec<&str>) -> Result<(), Error> {
+        let mut command = Command::new(&self.launchctl_path);
+        command
+            .args(args)
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .status()?;
+        Ok(())
+    }
+
+    fn is_bootstrapped(&self) -> bool {
+        let mut command = Command::new(&self.launchctl_path);
+        command
+            .args(vec!["print", &self.service_target])
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .status()
+            .unwrap_or_else(|_| panic!("Failed to execute command: {}", &self.launchctl_path))
+            .success()
+    }
+
+    /// Attemps to stop the service
     pub fn stop(&self) -> Result<(), Error> {
-        let mut print = Command::new(&self.launchctl_path);
-        print.args(vec!["print", &self.service_target]);
-
-        let mut kill = Command::new(&self.launchctl_path);
-        kill.args(vec!["kill", "SIGTERM", &self.service_target]);
-
-        let mut bootout = Command::new(&self.launchctl_path);
-        bootout.args(vec!["bootout", &self.domain_target, &self.plist_path]);
-
-        if !print.status()?.success() {
-            kill.status()?;
+        if !self.is_bootstrapped() {
+            self.launchctl_cmd(vec!["kill", "SIGTERM", &self.service_target])?;
         } else {
-            bootout.status()?;
+            self.launchctl_cmd(vec!["bootout", &self.domain_target, &self.plist_path])?;
         }
 
         Ok(())
@@ -61,30 +83,14 @@ impl Service {
 
     /// Attemps to start the service
     pub fn start(&self) -> Result<(), Error> {
-        // print
-        let mut print = Command::new(&self.launchctl_path);
-        print.args(vec!["print", &self.service_target]);
-
-        // bootstrap
-        let mut bootstrap = Command::new(&self.launchctl_path);
-        bootstrap.args(vec!["bootstrap", &self.domain_target, &self.plist_path]);
-
-        // kickstart
-        let mut kickstart = Command::new(&self.launchctl_path);
-        kickstart.args(vec!["kickstart", &self.plist_path]);
-
-        // enable
-        let mut enable = Command::new(&self.launchctl_path);
-        enable.args(vec!["enable", &self.service_target]);
-
         self.install()?;
 
         // This print message checks if the service is not bootstrapped
-        if !print.status()?.success() {
-            enable.status()?; // try to enable, if not already
-            bootstrap.status()?; // bootstrap the service
+        if !self.is_bootstrapped() {
+            self.launchctl_cmd(vec!["enable", &self.service_target])?;
+            self.launchctl_cmd(vec!["bootstrap", &self.domain_target, &self.plist_path])?;
         } else {
-            kickstart.status()?; // restart the service
+            self.launchctl_cmd(vec!["kickstart", &self.plist_path])?;
         }
 
         Ok(())
