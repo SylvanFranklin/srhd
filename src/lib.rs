@@ -1,66 +1,145 @@
-use rdev::{listen, Event};
-use std::{env, fs};
+use std::{env, fs, io::Error, process::Command};
 
-type HeldKeys = Vec<rdev::Key>;
-
-#[derive(serde::Deserialize, serde::Serialize, Debug)]
-struct Binding {
-    key: rdev::Key,
-    command: String,
-    mods: Vec<rdev::Key>,
+#[derive(Debug)]
+#[allow(dead_code)]
+pub struct Service {
+    launchctl_path: String,
+    service_target: String,
+    domain_target: String,
+    uid: String,
+    srhd_path: String,
+    plist_path: String,
+    user: String,
+    error_log_path: String,
+    out_log_path: String,
+    name: String,
 }
 
-#[derive(serde::Deserialize, serde::Serialize, Debug)]
-struct Config {
-    binding: Vec<Binding>,
-}
+#[allow(dead_code)]
+impl Service {
+    pub fn new() -> Self {
+        let user = env::var("USER").unwrap();
+        let home = env::var("HOME").unwrap();
+        let name = "com.sylvanfranklin.srhd".to_string();
+        let uid = "501".to_string();
 
-// methods, load, create_new, run
-impl Config {
-    fn load() -> Config {
-        let path = env::var("HOME").unwrap() + "/.config/srhd/config.toml";
-        let contents = fs::read_to_string(path).expect("Failed to read config file");
-        let config = toml::from_str::<Config>(&contents).expect("Failed to parse config file");
-        println!("Config loaded");
-        return config;
-    }
-
-    fn run(&self, keys: &HeldKeys) {
-        for binding in &self.binding {
-            if keys.contains(&binding.key)
-                && binding.mods.iter().all(|mod_key| keys.contains(mod_key))
-            {
-                binding.run();
-            }
+        Service {
+            launchctl_path: "/bin/launchctl".to_string(),
+            srhd_path: format!(
+                "{}/documents/projects/srhd/target/debug/internal_process",
+                home
+            ),
+            plist_path: format!("{}/Library/LaunchAgents/{}.plist", home, name),
+            error_log_path: format!("/tmp/srhd_{}.out.log", user),
+            out_log_path: format!("/tmp/srhd_{}.out.log", user),
+            service_target: format!("gui/{}/{}", uid, name),
+            domain_target: format!("gui/{}", uid),
+            uid,
+            user,
+            name,
         }
     }
-}
 
-impl Binding {
-    #[allow(dead_code)]
-    fn run(&self) {
-        std::process::Command::new(&self.command)
-            .spawn()
-            .expect("Failed to execute command");
+    pub fn status(&self) -> Result<(), Error> {
+        let mut launchctl = Command::new(&self.launchctl_path);
+
+        launchctl
+            .args(vec!["print", &self.service_target])
+            .status()?;
+
+        Ok(())
     }
-}
 
-pub fn srhd_process() {
-    let config = Config::load();
-    let mut keys: HeldKeys = Vec::new();
+    pub fn stop(&self) -> Result<(), Error> {
+        let mut print = Command::new(&self.launchctl_path);
+        print.args(vec!["print", &self.service_target]);
 
-    let callback = move |event: Event| match event.event_type {
-        rdev::EventType::KeyRelease(key) => {
-            keys.retain(|&x| x != key);
+        let mut kill = Command::new(&self.launchctl_path);
+        kill.args(vec!["kill", "SIGTERM", &self.service_target]);
+
+        let mut bootout = Command::new(&self.launchctl_path);
+        bootout.args(vec!["bootout", &self.domain_target, &self.plist_path]);
+
+        if !print.status()?.success() {
+            kill.status()?;
+        } else {
+            bootout.status()?;
         }
-        rdev::EventType::KeyPress(key) => {
-            keys.push(key);
-            config.run(&keys);
-        }
-        _ => {}
-    };
 
-    if let Err(error) = listen(callback) {
-        println!("Error: {:?}", error)
+        Ok(())
+    }
+
+    pub fn start(&self) -> Result<(), Error> {
+        // print
+        let mut print = Command::new(&self.launchctl_path);
+        print.args(vec!["print", &self.service_target]);
+
+        // bootstrap
+        let mut bootstrap = Command::new(&self.launchctl_path);
+        bootstrap.args(vec!["bootstrap", &self.domain_target, &self.plist_path]);
+
+        // kickstart
+        let mut kickstart = Command::new(&self.launchctl_path);
+        kickstart.args(vec!["kickstart", &self.plist_path]);
+
+        // enable
+        let mut enable = Command::new(&self.launchctl_path);
+        enable.args(vec!["enable", &self.service_target]);
+
+        self.install()?;
+
+        // check if service is bootstrapped
+        if !print.status()?.success() {
+            // There is no way to tell if the service is enabled or disabled, so we just call
+            // enable, and let it throw an error if the service is already enabled
+            enable.status()?;
+
+            // Bootstrap, this will autostart the service thanks to the plist property
+            bootstrap.status()?;
+        } else {
+            // The service is bootstrapped, it can be started
+            kickstart.status()?;
+        }
+
+        Ok(())
+    }
+
+    fn install(&self) -> Result<(), Error> {
+        let plist = format!(
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+    <key>Label</key>
+    <string>{}</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>{}</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+        <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+ 	     <false/>
+ 	     <key>Crashed</key>
+ 	     <true/>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/tmp/srhd_sylvanfranklin.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/srhd_sylvanfranklin.err.log</string>
+    <key>ProcessType</key>
+    <string>Interactive</string>
+    <key>Nice</key>
+    <integer>-20</integer>
+</dict>
+</plist>", self.name, self.srhd_path);
+
+        Ok(fs::write(&self.plist_path, plist)?)
+    }
+
+    fn uninstall(&self) -> Result<(), Error> {
+        Ok(fs::remove_file(&self.plist_path)?)
     }
 }
