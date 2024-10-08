@@ -16,7 +16,7 @@ enum Commands {
     Stop,
     /// Restart the service
     Restart,
-    /// Prints the path to the toml config file
+    /// Prints path to the config file. Run `help config` for config options.
     #[command(long_about = "keybindings...")]
     Config,
 }

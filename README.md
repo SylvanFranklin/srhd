@@ -31,12 +31,16 @@ cargo run -- start
 ```
 
 ## Usage
+
 ```
+Usage: srhd [COMMAND]
+
 Commands:
-  start  
-  stop   
-  restart
-  help   Print this message or the help of the given subcommand(s)
+  start    Start launchctl login service
+  stop     Stop launchctl login service
+  restart  Restart the service
+  config   Prints path to the config file. Run `help config` for config options
+  help     Print this message or the help of the given subcommand(s)
 
 Options:
   -h, --help     Print help
