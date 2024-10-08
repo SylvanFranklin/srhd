@@ -10,16 +10,23 @@ The first time **srhd** starts it will request access to input monitoring. After
 
 __Secure Keyboard Entry__ must be disabled in whatever terminal emulator **srhd** is started from. 
 
-**Via Homebrew**
+**Homebrew**
 ```
 brew install srhd
 srhd start
 ```
 
-**Via Cargo**
+**Cargo**
 ```
 cargo install srhd
 srhd start
+```
+
+**Source** 
+```
+git clone https://github.com/SylvanFranklin/srhd
+cd srhd 
+cargo run -- start
 ```
 
 ## Usage
