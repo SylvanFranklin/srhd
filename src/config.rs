@@ -17,8 +17,19 @@ pub struct Config {
 // methods, load, create_new, run
 impl Config {
     fn load() -> Config {
-        let path = env::var("HOME").unwrap() + "/.config/srhd/config.toml";
-        let contents = fs::read_to_string(path).expect("Failed to read config file");
+        let path = env::var("XDG_CONFIG_HOME").unwrap_or_else(|_e| match env::var("HOME") {
+            Ok(path) => path,
+            Err(_) => panic!("Failed to acquire config path"),
+        });
+
+        let contents = {
+            let this = fs::read_to_string(path);
+            match this {
+                Ok(t) => t,
+                Err(_) => panic!("Failed to read config file"),
+            }
+        };
+
         let config = toml::from_str::<Config>(&contents).expect("Failed to parse config file");
         println!("Config loaded");
         return config;

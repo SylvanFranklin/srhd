@@ -1,5 +1,10 @@
 [package]
 name = "srhd"
+authors = ["Sylvan Franklin"]
+description = "A lightweight and performant hotkey daemon for MacOS"
+repository = "https://github.com/sylvanfranklin/srhd"
+keywords = ["daemon", "MacOS", "keybinds", "service", "app launcher"]
+license = "MIT"
 version = "0.1.0"
 edition = "2021"
 
