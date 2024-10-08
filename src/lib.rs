@@ -4,15 +4,23 @@ use std::{env, fs, io::Error, process::Command};
 #[derive(Debug)]
 #[allow(dead_code)]
 pub struct Service {
+    /// Name of the service, constant (com.sylvanfranklin.srhd)
     name: String,
-    launchctl_path: String,
+    /// usually /bin/launchctl
     service_target: String,
+    /// The target of the domain (gui/<uid>)
+    launchctl_path: String,
+    /// The target of the service (gui/<uid>/com.sylvanfranklin.srhd)
     domain_target: String,
+    /// uid, typically 501
     uid: String,
+    /// Path to the srhd binary
     srhd_path: String,
+    /// Path to the plist file typically ~/Library/LaunchAgents/com.sylvanfranklin.srhd.plist
     plist_path: String,
-    user: String,
+    /// Path to the error log file (/tmp/srhd_<user>.err.log)
     error_log_path: String,
+    /// Path to the out log file (/tmp/srhd_<user>.out.log)
     out_log_path: String,
 }
 
@@ -43,7 +51,6 @@ impl Service {
             service_target: format!("gui/{}/{}", uid, name),
             domain_target: format!("gui/{}", uid),
             uid,
-            user,
             name,
         }
     }
