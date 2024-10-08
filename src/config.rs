@@ -1,7 +1,6 @@
-use rdev::{listen, Event};
 use std::{env, fs};
 
-type HeldKeys = Vec<rdev::Key>;
+pub type HeldKeys = Vec<rdev::Key>;
 
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
 struct Binding {
@@ -11,7 +10,7 @@ struct Binding {
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
-struct Config {
+pub struct Config {
     binding: Vec<Binding>,
 }
 
@@ -47,7 +46,9 @@ impl Binding {
     }
 }
 
-fn main() {
+use rdev::{listen, Event};
+
+pub fn srhd_process() {
     let config = Config::load();
     let mut keys: HeldKeys = Vec::new();
 
@@ -66,4 +67,3 @@ fn main() {
         println!("Error: {:?}", error)
     }
 }
-
