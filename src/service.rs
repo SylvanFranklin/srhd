@@ -55,6 +55,11 @@ impl Service {
         }
     }
 
+    pub fn restart(&self) -> Result<(), Error> {
+        self.stop()?;
+        self.start()
+    }
+
     // todo make this into an external struct, maybe even a library
     fn launchctl_cmd(&self, args: Vec<&str>) -> Result<(), Error> {
         let mut command = Command::new(&self.launchctl_path);
