@@ -10,10 +10,15 @@ struct Args {
 
 #[derive(Parser, Debug)]
 enum Commands {
-    // Start the daemon
+    /// Start launchctl login service
     Start,
-    // Stop the daemon,
+    /// Stop launchctl login service
     Stop,
+    /// Restart the service
+    Restart,
+    /// Prints the path to the toml config file
+    #[command(long_about = "keybindings...")]
+    Config,
 }
 
 fn main() {
@@ -24,6 +29,8 @@ fn main() {
         match cmd {
             Commands::Start => s.start().expect("Failed to start daemon"),
             Commands::Stop => s.stop().expect("Failed to stop daemon"),
+            Commands::Restart => s.restart().expect("Failed to restart daemon"),
+            Commands::Config => println!("{}", "todo"),
         }
     } else {
         srhd::config::srhd_process();
