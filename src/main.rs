@@ -33,6 +33,6 @@ fn main() {
             Commands::Config => println!("{}", "todo"),
         }
     } else {
-        srhd::config::srhd_process();
+        srhd::listener::srhd_process();
     }
 }
