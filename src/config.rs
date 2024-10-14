@@ -1,54 +1,114 @@
-use std::{env, fs};
+/// seperates keys and mods in order to make the serializer more straightforward.
+/// there is some redundancy with these match statements, I would like to find a more elegant way
+/// to do it in the future
+struct HeldKeys {
+    keys: Vec<rdev::Key>,
+    mods: Vec<Mods>,
+}
 
-pub type HeldKeys = Vec<rdev::Key>;
+impl HeldKeys {
+    fn new() -> Self {
+        HeldKeys {
+            keys: vec![],
+            mods: vec![],
+        }
+    }
 
+    fn remove(&mut self, key: rdev::Key) {
+        use rdev::Key::*;
+        match key {
+            ControlLeft | ControlRight => self.mods.retain(|e| *e != Mods::Control),
+            ShiftLeft | ShiftRight => self.mods.retain(|e| *e != Mods::Shift),
+            Alt => self.mods.retain(|e| *e != Mods::Alt),
+            MetaLeft | MetaRight => self.mods.retain(|e| *e != Mods::Command),
+            other => self.keys.retain(|e| *e != other),
+        };
+    }
+
+    fn push(&mut self, key: rdev::Key) {
+        use rdev::Key::*;
+        match key {
+            ControlLeft | ControlRight => self.mods.push(Mods::Control),
+            ShiftLeft | ShiftRight => self.mods.push(Mods::Shift),
+            Alt => self.mods.push(Mods::Alt),
+            MetaLeft | MetaRight => self.mods.push(Mods::Command),
+            other => self.keys.push(other),
+        };
+    }
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Debug, PartialEq, Eq)]
+enum Mods {
+    Command,
+    Control,
+    Shift,
+    Alt,
+}
+
+/// Binding
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
 struct Binding {
     key: rdev::Key,
     command: String,
-    mods: Vec<rdev::Key>,
+    mods: Vec<Mods>,
 }
 
-#[derive(serde::Deserialize, serde::Serialize, Debug)]
-pub struct Config {
-    binding: Vec<Binding>,
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+struct Bindings {
+    bindings: Vec<Binding>,
+}
+
+struct Config {
+    path: PathBuf,
+    content: Bindings,
 }
 
 // methods, load, create_new, run
 impl Config {
-    fn load() -> Config {
-        let path = env::var("XDG_CONFIG_HOME").unwrap_or_else(|_e| match env::var("HOME") {
-            Ok(path) => path,
-            Err(_) => panic!("Failed to acquire config path"),
-        });
+    // always called internally, creates a new config file
+    fn create_new_file(path: &PathBuf) -> Result<Vec<Binding>, std::io::Error> {
+        let base_config: Vec<Binding> = vec![Binding {
+            key: rdev::Key::KeyL,
+            command: "echo 'Hello World'".to_string(),
+            mods: vec![Mods::Shift, Mods::Control],
+        }];
 
-        let contents = {
-            let this = fs::read_to_string(path);
-            match this {
-                Ok(t) => t,
-                Err(_) => panic!("Failed to read config file"),
-            }
-        };
+        let raw_toml_string =
+            "[[bindings]]\nkey = \"KeyL\"\ncommand = \"echo 'hello world'\"\nmods = [\"Shift\", \"Control\"]";
 
-        let config = toml::from_str::<Config>(&contents).expect("Failed to parse config file");
-        println!("Config loaded");
-        return config;
+        // create the directory
+        std::fs::create_dir_all(path.parent().unwrap())?;
+        std::fs::write(path, raw_toml_string)?;
+        Ok(base_config)
     }
 
-    fn run(&self, keys: &HeldKeys) {
-        for binding in &self.binding {
-            if keys.contains(&binding.key)
-                && binding.mods.iter().all(|mod_key| keys.contains(mod_key))
-            {
-                binding.run();
-            }
-        }
+    /// Used for creating a new Config Object
+    pub fn load() -> Config {
+        // define the path right away, this can be used for the rest of the creation process, since
+        // it's on the top level and will be handed down.
+        let path: PathBuf =
+            PathBuf::from(std::env::var("HOME").unwrap()).join(".config/srhd/srhd.toml");
+
+        Config::create_new_file(&path).unwrap();
+
+        let raw_file_contents: String = std::fs::read_to_string(&path).unwrap();
+        let content = toml::from_str::<Bindings>(&raw_file_contents).unwrap();
+
+        Config { path, content }
+    }
+
+    // Attempts to execute all the commands
+    fn execute_commands(&self, held: &HeldKeys) {
+        self.content
+            .bindings
+            .iter()
+            .filter(|b| held.keys.contains(&b.key) && b.mods.iter().all(|e| held.mods.contains(e)))
+            .for_each(|b| b.run());
     }
 }
 
 impl Binding {
-    #[allow(dead_code)]
-    fn run(&self) {
+    pub fn run(&self) {
         std::process::Command::new("sh")
             .arg("-c")
             .arg(&self.command)
@@ -57,19 +117,21 @@ impl Binding {
     }
 }
 
+use std::{collections::HashMap, path::PathBuf};
+
 use rdev::{listen, Event};
 
 pub fn srhd_process() {
     let config = Config::load();
-    let mut keys: HeldKeys = Vec::new();
+    let mut keys: HeldKeys = HeldKeys::new();
 
     let callback = move |event: Event| match event.event_type {
         rdev::EventType::KeyRelease(key) => {
-            keys.retain(|&x| x != key);
+            keys.remove(key);
         }
         rdev::EventType::KeyPress(key) => {
             keys.push(key);
-            config.run(&keys);
+            config.execute_commands(&keys);
         }
         _ => {}
     };
