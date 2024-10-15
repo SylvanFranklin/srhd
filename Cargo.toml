@@ -5,7 +5,7 @@ description = "A lightweight and performant hotkey daemon for MacOS"
 repository = "https://github.com/sylvanfranklin/srhd"
 keywords = ["daemon", "MacOS", "keybinds", "service", "launcher"]
 license = "MIT"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
