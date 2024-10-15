@@ -19,9 +19,10 @@ struct Binding {
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 struct Bindings {
-    shell: Vec<Binding>,
+    bindings: Vec<Binding>,
 }
 
+#[allow(dead_code)]
 pub struct Config {
     path: PathBuf,
     content: Bindings,

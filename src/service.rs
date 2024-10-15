@@ -68,6 +68,19 @@ impl Service {
         Ok(())
     }
 
+    /// checks if the log files exist, if not, creates them
+    fn create_log_files(&self) -> Result<(), Error> {
+        if !fs::metadata(&self.error_log_path).is_ok() {
+            fs::write(&self.error_log_path, "")?;
+        }
+
+        if !fs::metadata(&self.out_log_path).is_ok() {
+            fs::write(&self.out_log_path, "")?;
+        }
+
+        Ok(())
+    }
+
     fn is_bootstrapped(&self) -> bool {
         let mut command = Command::new(&self.launchctl_path);
         command
@@ -93,8 +106,9 @@ impl Service {
     /// Attemps to start the service
     pub fn start(&self) -> Result<(), Error> {
         self.install()?;
+        self.create_log_files()?;
 
-        // This print message checks if the service is not bootstrapped
+        //  This print message checks if the service is not bootstrapped
         if !self.is_bootstrapped() {
             self.launchctl_cmd(vec!["enable", &self.service_target])?;
             self.launchctl_cmd(vec!["bootstrap", &self.domain_target, &self.plist_path])?;
