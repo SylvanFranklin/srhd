@@ -27,6 +27,8 @@ pub struct Service {
 #[allow(dead_code)]
 impl Service {
     pub fn new() -> Self {
+        let bin = env::current_exe().unwrap();
+
         let user = match env::var("USER") {
             Ok(user) => user,
             Err(_) => panic!("$USER environment variable not found, abort."),
@@ -41,7 +43,7 @@ impl Service {
 
         Service {
             launchctl_path: "/bin/launchctl".to_string(),
-            srhd_path: format!("{}/documents/projects/srhd/target/debug/srhd", home),
+            srhd_path: format!("{}", bin.display()),
             plist_path: format!("{}/Library/LaunchAgents/{}.plist", home, name),
             error_log_path: format!("/tmp/srhd_{}.out.log", user),
             out_log_path: format!("/tmp/srhd_{}.out.log", user),
