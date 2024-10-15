@@ -1,7 +1,5 @@
 # SRHD
-**S**imple **R**ust **H**otkey **D**aemon, 
-
-**SRHD** is a minimal and lightweight key binding service for MacOS similar to **skhd**. It can be run as a service using the native `launchctl` to interact with `launchd` via a plist file. It is configured through a simple toml file scheme. 
+**S**imple **R**ust **H**otkey **D**aemon is a minimal and lightweight key binding service for MacOS similar to **skhd**. It can be run as a in the background using the native `launchctl` to interact with `launchd` via a plist file. It is configured through a simple toml file scheme. **SRHD** is still in early development, and is lacking certain features like a lock file and comprehensive error messages. Contritubtion is greatly appreciated. 
 
 ## Installation 
 The first time **srhd** starts it will request access to input monitoring.
