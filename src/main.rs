@@ -33,6 +33,7 @@ fn main() {
             Commands::Config => println!("{}", "todo"),
         }
     } else {
+        println!("config loaded");
         srhd::listener::srhd_process();
     }
 }

@@ -41,10 +41,7 @@ impl Service {
 
         Service {
             launchctl_path: "/bin/launchctl".to_string(),
-            srhd_path: format!(
-                "{}/documents/projects/srhd/target/debug/internal_process",
-                home
-            ),
+            srhd_path: format!("{}/documents/projects/srhd/target/debug/srhd", home),
             plist_path: format!("{}/Library/LaunchAgents/{}.plist", home, name),
             error_log_path: format!("/tmp/srhd_{}.out.log", user),
             out_log_path: format!("/tmp/srhd_{}.out.log", user),

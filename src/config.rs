@@ -52,7 +52,10 @@ impl Config {
         let path: PathBuf =
             PathBuf::from(std::env::var("HOME").unwrap()).join(".config/srhd/srhd.toml");
 
-        Config::create_new_file(&path).unwrap();
+        if !path.exists() {
+            println!("Creating new config");
+            Config::create_new_file(&path).unwrap();
+        }
 
         let raw_file_contents: String = std::fs::read_to_string(&path).unwrap();
         let content = toml::from_str::<Bindings>(&raw_file_contents).unwrap();
@@ -80,7 +83,6 @@ impl Binding {
     }
 }
 
-use std::{collections::HashMap, path::PathBuf};
+use std::path::PathBuf;
 
 use crate::listener::HeldKeys;
-
