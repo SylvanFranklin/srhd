@@ -20,7 +20,7 @@ impl HeldKeys {
         match key {
             ControlLeft | ControlRight => self.mods.retain(|e| *e != Mods::Control),
             ShiftLeft | ShiftRight => self.mods.retain(|e| *e != Mods::Shift),
-            Alt => self.mods.retain(|e| *e != Mods::Alt),
+            Alt => self.mods.retain(|e| *e != Mods::Option),
             MetaLeft | MetaRight => self.mods.retain(|e| *e != Mods::Command),
             other => self.keys.retain(|e| *e != other),
         };
@@ -31,7 +31,7 @@ impl HeldKeys {
         match key {
             ControlLeft | ControlRight => self.mods.push(Mods::Control),
             ShiftLeft | ShiftRight => self.mods.push(Mods::Shift),
-            Alt => self.mods.push(Mods::Alt),
+            Alt => self.mods.push(Mods::Option),
             MetaLeft | MetaRight => self.mods.push(Mods::Command),
             other => self.keys.push(other),
         };

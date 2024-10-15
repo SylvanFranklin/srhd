@@ -6,7 +6,7 @@ pub enum Mods {
     Command,
     Control,
     Shift,
-    Alt,
+    Option,
 }
 
 /// Binding
@@ -19,7 +19,7 @@ struct Binding {
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 struct Bindings {
-    bindings: Vec<Binding>,
+    shell: Vec<Binding>,
 }
 
 pub struct Config {
@@ -28,7 +28,7 @@ pub struct Config {
 }
 
 impl Config {
-    // always called internally, creates a new config file
+    /// always called internally, creates a new config file
     fn create_new_file(path: &PathBuf) -> Result<Vec<Binding>, std::io::Error> {
         let base_config: Vec<Binding> = vec![Binding {
             key: rdev::Key::KeyL,
@@ -63,7 +63,7 @@ impl Config {
         Config { path, content }
     }
 
-    // Attempts to execute all the commands
+    /// Attempts to execute all the commands
     pub fn execute_commands(&self, held: &HeldKeys) {
         self.content
             .bindings
@@ -83,6 +83,5 @@ impl Binding {
     }
 }
 
-use std::path::PathBuf;
-
 use crate::listener::HeldKeys;
+use std::path::PathBuf;
