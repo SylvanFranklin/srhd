@@ -7,23 +7,25 @@ After being granted access you must restart the service for the change to take
 effect. __Secure Keyboard Entry__ must be disabled in whatever terminal
 emulator **srhd** is started from. (I did not find this to be a problem in alacritty)
 
-**Homebrew**
-```
-brew install srhd
-srhd start
-```
+<!-- **Homebrew** -->
+<!-- ``` -->
+<!-- brew install srhd -->
+<!-- srhd start -->
+<!-- ``` -->
 
 **Cargo**
+Requires cargo and rust.    
 ```
 cargo install srhd
 srhd start
 ```
 
 **Source** 
+Requires cargo and rust.    
 ```
 git clone https://github.com/SylvanFranklin/srhd
 cd srhd 
-cargo run -- start
+cargo run 
 ```
 
 ## Usage
