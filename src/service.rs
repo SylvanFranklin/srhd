@@ -26,6 +26,7 @@ pub struct Service {
 
 #[allow(dead_code)]
 impl Service {
+    /// Sets up all necessary vars. 
     pub fn new() -> Self {
         let bin = env::current_exe().unwrap();
 
@@ -43,6 +44,7 @@ impl Service {
 
         Service {
             launchctl_path: "/bin/launchctl".to_string(),
+            // TODO, this is not an ideal way to get the bin name
             srhd_path: format!("{}", bin.display()),
             plist_path: format!("{}/Library/LaunchAgents/{}.plist", home, name),
             error_log_path: format!("/tmp/srhd_{}.out.log", user),
