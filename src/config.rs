@@ -61,6 +61,8 @@ impl Config {
         let raw_file_contents: String = std::fs::read_to_string(&path).unwrap();
         let content = toml::from_str::<Bindings>(&raw_file_contents).unwrap();
 
+        println!("Config loaded sucessfully.");
+        println!("{} Bindings active.", content.bindings.len());
         Config { path, content }
     }
 
