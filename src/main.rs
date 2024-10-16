@@ -14,7 +14,7 @@ enum Commands {
     Start,
     /// Stop launchctl login service
     Stop,
-    /// Restart the service
+    /// Restart launchctl login service
     Restart,
     /// Prints path to the config file. Run `help config` for config options.
     #[command(long_about = "keybindings...")]
@@ -24,16 +24,19 @@ enum Commands {
 fn main() {
     let args = Args::parse();
 
+    // When started as a daemon, this will pass right through to the else
+    // block, since there are no arguments passed via the plist file
     if let Some(cmd) = args.cmd {
-        let s = srhd::service::Service::new();
+        let service = srhd::service::Service::new();
+        use Commands::*;
         match cmd {
-            Commands::Start => s.start().expect("Failed to start daemon"),
-            Commands::Stop => s.stop().expect("Failed to stop daemon"),
-            Commands::Restart => s.restart().expect("Failed to restart daemon"),
-            Commands::Config => println!("{}", "todo"),
+            Start => service.start().expect("Failed to start service"),
+            Stop => service.stop().expect("Failed to stop service"),
+            Restart => service.restart().expect("Failed to restart service"),
+            // TODO - make not hardcoded
+            Config => println!(".config/srhd/srhd.toml"),
         }
     } else {
-        println!("config loaded");
         srhd::listener::srhd_process();
     }
 }
