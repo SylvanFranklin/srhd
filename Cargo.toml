@@ -1,12 +1,15 @@
 [package]
 name = "srhd"
 authors = ["Sylvan Franklin"]
-description = "A lightweight and performant hotkey daemon for MacOS"
+description = "A lightweight hotkey daemon for MacOS"
 repository = "https://github.com/sylvanfranklin/srhd"
 keywords = ["daemon", "MacOS", "keybinds", "service", "launcher"]
 license = "MIT"
 version = "0.1.1"
 edition = "2021"
+
+[profile.release]
+lto = true
 
 [dependencies]
 rdev = { version = "0.5.3", features = ["serialize"] }
