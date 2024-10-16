@@ -12,7 +12,7 @@ edition = "2021"
 lto = true
 
 [dependencies]
-rdev = { version = "0.5.3", features = ["serialize"] }
+rdev = { version = "0.5.3", features = ["serialize", "unstable_grab"] }
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8.19"
 clap = { version = "4.5.18", features = ["derive"] }
