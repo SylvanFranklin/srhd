@@ -61,13 +61,6 @@ pub fn srhd_process() {
             }
             _ => return Some(event),
         }
-
-        // if let EventType::KeyPress(Key::CapsLock) = event.event_type {
-        //     println!("Consuming and cancelling CapsLock");
-        //     None // CapsLock is now effectively disabled
-        // } else {
-        //     Some(event)
-        // }
     };
 
     if let Err(error) = grab(callback) {
