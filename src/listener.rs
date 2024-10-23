@@ -1,12 +1,12 @@
-use crate::config::{Config, Mods};
+use crate::config::Config;
 use std::sync::{Arc, Mutex};
 
 pub struct HeldKeys {
-    command: bool,
-    control: bool,
-    shift: bool,
-    option: bool,
-    key: Option<rdev::Key>,
+    pub command: bool,
+    pub control: bool,
+    pub shift: bool,
+    pub option: bool,
+    pub key: Option<rdev::Key>,
 }
 
 impl HeldKeys {
@@ -48,7 +48,10 @@ pub fn srhd_process() {
             }
             rdev::EventType::KeyPress(key) => {
                 keys.toggle(key, true);
-                config.execute_commands(&keys);
+                if config.execute_command(&keys) {
+                    return None;
+                }
+
                 return Some(event);
             }
             _ => return Some(event),
