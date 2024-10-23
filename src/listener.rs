@@ -1,3 +1,5 @@
+use std::sync::{Arc, Mutex};
+
 use rdev::{listen, Event};
 
 use crate::config::{Config, Mods};
@@ -37,23 +39,37 @@ impl HeldKeys {
         };
     }
 }
-
+/// Starts the main event loop for the listener
+/// TODO, tap into the keyboard state instead of storing it in a vector;
 pub fn srhd_process() {
     let config = Config::load();
-    let mut keys: HeldKeys = HeldKeys::new();
+    // let mut keys: HeldKeys = HeldKeys::new();
+    let keys = Arc::new(Mutex::new(HeldKeys::new()));
+    use rdev::{grab, Event, EventType, Key};
 
-    let callback = move |event: Event| match event.event_type {
-        rdev::EventType::KeyRelease(key) => {
-            keys.remove(key);
+    let callback = move |event: Event| -> Option<Event> {
+        let mut keys = keys.lock().unwrap();
+
+        match event.event_type {
+            rdev::EventType::KeyRelease(key) => {
+                keys.remove(key);
+            }
+            rdev::EventType::KeyPress(key) => {
+                keys.push(key);
+                config.execute_commands(&keys);
+            }
+            _ => {}
         }
-        rdev::EventType::KeyPress(key) => {
-            keys.push(key);
-            config.execute_commands(&keys);
+
+        if let EventType::KeyPress(Key::CapsLock) = event.event_type {
+            println!("Consuming and cancelling CapsLock");
+            None // CapsLock is now effectively disabled
+        } else {
+            Some(event)
         }
-        _ => {}
     };
 
-    if let Err(error) = listen(callback) {
+    if let Err(error) = grab(callback) {
         println!("Error: {:?}", error)
     }
 }
