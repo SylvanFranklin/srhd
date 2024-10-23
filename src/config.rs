@@ -67,12 +67,23 @@ impl Config {
     }
 
     /// Attempts to execute all the commands
-    pub fn execute_commands(&self, held: &HeldKeys) {
-        self.content
-            .bindings
-            .iter()
-            .filter(|b| held.keys.contains(&b.key) && b.mods.iter().all(|e| held.mods.contains(e)))
-            .for_each(|b| b.run());
+    pub fn execute_command(&self, held: &HeldKeys) -> bool {
+        for binding in &self.content.bindings {
+            if let Some(key) = held.key {
+                if key == binding.key
+                    && binding.mods.iter().all(|modi| match modi {
+                        Mods::Command => held.command,
+                        Mods::Control => held.control,
+                        Mods::Shift => held.shift,
+                        Mods::Option => held.option,
+                    })
+                {
+                    binding.run();
+                    return true;
+                }
+            }
+        }
+        false
     }
 }
 
