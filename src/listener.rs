@@ -1,38 +1,34 @@
-use std::sync::{Arc, Mutex};
 use crate::config::{Config, Mods};
+use std::sync::{Arc, Mutex};
 
 pub struct HeldKeys {
-    pub keys: Vec<rdev::Key>,
-    pub mods: Vec<Mods>,
+    command: bool,
+    control: bool,
+    shift: bool,
+    option: bool,
+    key: Option<rdev::Key>,
 }
 
 impl HeldKeys {
     fn new() -> Self {
         HeldKeys {
-            keys: vec![],
-            mods: vec![],
+            command: false,
+            control: false,
+            shift: false,
+            option: false,
+            key: None,
         }
     }
 
-    fn remove(&mut self, key: rdev::Key) {
+    fn toggle(&mut self, key: rdev::Key, is: bool) {
         use rdev::Key::*;
         match key {
-            ControlLeft | ControlRight => self.mods.retain(|e| *e != Mods::Control),
-            ShiftLeft | ShiftRight => self.mods.retain(|e| *e != Mods::Shift),
-            Alt => self.mods.retain(|e| *e != Mods::Option),
-            MetaLeft | MetaRight => self.mods.retain(|e| *e != Mods::Command),
-            other => self.keys.retain(|e| *e != other),
-        };
-    }
-
-    fn push(&mut self, key: rdev::Key) {
-        use rdev::Key::*;
-        match key {
-            ControlLeft | ControlRight => self.mods.push(Mods::Control),
-            ShiftLeft | ShiftRight => self.mods.push(Mods::Shift),
-            Alt => self.mods.push(Mods::Option),
-            MetaLeft | MetaRight => self.mods.push(Mods::Command),
-            other => self.keys.push(other),
+            ControlLeft | ControlRight => self.control = is,
+            ShiftLeft | ShiftRight => self.shift = is,
+            MetaLeft | MetaRight => self.command = is,
+            Alt => self.option = is,
+            other if is => self.key = Some(other),
+            _ => self.key = None
         };
     }
 }
@@ -47,11 +43,11 @@ pub fn srhd_process() {
 
         match event.event_type {
             rdev::EventType::KeyRelease(key) => {
-                keys.remove(key);
+                keys.pressed(key, false);
                 return Some(event);
             }
             rdev::EventType::KeyPress(key) => {
-                keys.push(key);
+                keys.pressed(key, true);
                 config.execute_commands(&keys);
                 return Some(event);
             }
