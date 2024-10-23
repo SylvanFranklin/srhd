@@ -1,7 +1,4 @@
 use std::sync::{Arc, Mutex};
-
-use rdev::{listen, Event};
-
 use crate::config::{Config, Mods};
 
 pub struct HeldKeys {
@@ -40,11 +37,10 @@ impl HeldKeys {
     }
 }
 /// Starts the main event loop for the listener
-/// TODO, tap into the keyboard state instead of storing it in a vector;
 pub fn srhd_process() {
     let config = Config::load();
     let keys = Arc::new(Mutex::new(HeldKeys::new()));
-    use rdev::{grab, Event, EventType, Key};
+    use rdev::{grab, Event};
 
     let callback = move |event: Event| -> Option<Event> {
         let mut keys = keys.lock().unwrap();
