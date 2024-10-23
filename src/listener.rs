@@ -43,7 +43,6 @@ impl HeldKeys {
 /// TODO, tap into the keyboard state instead of storing it in a vector;
 pub fn srhd_process() {
     let config = Config::load();
-    // let mut keys: HeldKeys = HeldKeys::new();
     let keys = Arc::new(Mutex::new(HeldKeys::new()));
     use rdev::{grab, Event, EventType, Key};
 
@@ -53,20 +52,22 @@ pub fn srhd_process() {
         match event.event_type {
             rdev::EventType::KeyRelease(key) => {
                 keys.remove(key);
+                return Some(event);
             }
             rdev::EventType::KeyPress(key) => {
                 keys.push(key);
                 config.execute_commands(&keys);
+                return Some(event);
             }
-            _ => {}
+            _ => return Some(event),
         }
 
-        if let EventType::KeyPress(Key::CapsLock) = event.event_type {
-            println!("Consuming and cancelling CapsLock");
-            None // CapsLock is now effectively disabled
-        } else {
-            Some(event)
-        }
+        // if let EventType::KeyPress(Key::CapsLock) = event.event_type {
+        //     println!("Consuming and cancelling CapsLock");
+        //     None // CapsLock is now effectively disabled
+        // } else {
+        //     Some(event)
+        // }
     };
 
     if let Err(error) = grab(callback) {
