@@ -1,16 +1,17 @@
 # SRHD
 **S**imple **R**ust **H**otkey **D**aemon is a minimal and lightweight key
-binding service for MacOS similar to **skhd**. It can be run as a in the
+binding service for MacOS similar to **skhd**. It can be run as in the
 background using the native `launchctl` to interact with `launchd` via a plist
-file. It is configured through a simple toml file scheme. **SRHD** is still in
-early development, and is lacking certain features like hot config reloading
-and comprehensive error messages. I'm working on rolling those out ASAP.  
+file. Keybinds are configured via toml. 
+
+> [!WARNING]  
+> **SRHD** is still in early development, and is lacking certain features like hot config reloading and comprehensive error messages. I'm working on rolling those out ASAP.  
 
 ## Installation 
 The first time **srhd** starts it will request access to input monitoring.
 After being granted access you must restart the service for the change to take
 effect. __Secure Keyboard Entry__ must be disabled in whatever terminal
-emulator **srhd** is started from. (I did not find this to be a problem in alacritty)
+emulator **srhd** is started from.
 
 **Homebrew**
 ```
