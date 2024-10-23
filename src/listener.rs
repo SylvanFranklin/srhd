@@ -43,11 +43,11 @@ pub fn srhd_process() {
 
         match event.event_type {
             rdev::EventType::KeyRelease(key) => {
-                keys.pressed(key, false);
+                keys.toggle(key, false);
                 return Some(event);
             }
             rdev::EventType::KeyPress(key) => {
-                keys.pressed(key, true);
+                keys.toggle(key, true);
                 config.execute_commands(&keys);
                 return Some(event);
             }
