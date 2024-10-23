@@ -1,6 +1,4 @@
-/// seperates keys and mods in order to make the serializer more straightforward.
-/// there is some redundancy with these match statements, I would like to find a more elegant way
-/// to do it in the future
+/// Serialize struct for the purpose of the config file  
 #[derive(serde::Serialize, serde::Deserialize, Debug, PartialEq, Eq)]
 pub enum Mods {
     Command,
@@ -9,7 +7,7 @@ pub enum Mods {
     Option,
 }
 
-/// Binding
+/// Serialize struct for the purpose of the config file
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
 struct Binding {
     key: rdev::Key,
@@ -17,6 +15,7 @@ struct Binding {
     mods: Vec<Mods>,
 }
 
+/// Serialize struct for the purpose of the config file
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 struct Bindings {
     bindings: Vec<Binding>,
