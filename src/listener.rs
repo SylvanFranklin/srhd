@@ -28,7 +28,7 @@ impl HeldKeys {
             MetaLeft | MetaRight => self.command = is,
             Alt => self.option = is,
             other if is => self.key = Some(other),
-            _ => self.key = None
+            _ => self.key = None,
         };
     }
 }
