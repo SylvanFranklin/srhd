@@ -1,4 +1,4 @@
-use crate::config::Config;
+use crate::config::{Binding, Config};
 use std::sync::{Arc, Mutex};
 
 pub struct HeldKeys {
@@ -18,6 +18,31 @@ impl HeldKeys {
             option: false,
             key: None,
         }
+    }
+
+    pub fn binding_pressed(&self, binding: &Binding) -> bool {
+        let test: HeldKeys = binding.into();
+        if test.key != self.key {
+            return false;
+        }
+
+        if test.command != self.command {
+            return false;
+        }
+
+        if test.control != self.control {
+            return false;
+        }
+
+        if test.shift != self.shift {
+            return false;
+        }
+
+        if test.option != self.option {
+            return false;
+        }
+
+        true
     }
 
     fn toggle(&mut self, key: rdev::Key, is: bool) {

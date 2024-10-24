@@ -9,10 +9,22 @@ pub enum Mods {
 
 /// Serialize struct for the purpose of the config file
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
-struct Binding {
+pub struct Binding {
     key: rdev::Key,
     command: String,
     mods: Vec<Mods>,
+}
+
+impl Into<HeldKeys> for &Binding {
+    fn into(self) -> HeldKeys {
+        HeldKeys {
+            command: self.mods.contains(&Mods::Command),
+            control: self.mods.contains(&Mods::Control),
+            shift: self.mods.contains(&Mods::Shift),
+            option: self.mods.contains(&Mods::Option),
+            key: Some(self.key),
+        }
+    }
 }
 
 /// Serialize struct for the purpose of the config file
@@ -68,18 +80,9 @@ impl Config {
     /// Attempts to execute all the commands
     pub fn execute_command(&self, held: &HeldKeys) -> bool {
         for binding in &self.content.bindings {
-            if let Some(key) = held.key {
-                if key == binding.key
-                    && binding.mods.iter().all(|modi| match modi {
-                        Mods::Command => held.command,
-                        Mods::Control => held.control,
-                        Mods::Shift => held.shift,
-                        Mods::Option => held.option,
-                    })
-                {
-                    binding.run();
-                    return true;
-                }
+            if held.binding_pressed(binding) {
+                binding.run();
+                return true;
             }
         }
         false
