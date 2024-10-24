@@ -20,6 +20,7 @@ impl HeldKeys {
         }
     }
 
+    /// Checks if the binding is pressed, clean this up
     pub fn binding_pressed(&self, binding: &Binding) -> bool {
         let test: HeldKeys = binding.into();
         if test.key != self.key {
