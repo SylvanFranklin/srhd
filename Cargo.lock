@@ -299,9 +299,9 @@ checksum = "7943c866cc5cd64cbc25b2e01621d07fa8eb2a1a23160ee81ce38704e97b8ecf"
 
 [[package]]
 name = "launchctl"
-version = "0.1.1"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa2d18a2cb7becfe3cb649bfa3a26ba522857be1cbf472ddb288dbaa5593a76e"
+checksum = "d7ebdc45e66943f72b232b44c6e2a5c3fcfd484f42ee27d651f0f69cc109532c"
 
 [[package]]
 name = "lazy_static"
