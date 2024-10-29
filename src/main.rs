@@ -27,13 +27,12 @@ fn main() {
     // When started as a daemon, this will pass right through to the else
     // block, since there are no arguments passed via the plist file
     if let Some(cmd) = args.cmd {
-        let service = srhd::service::Service::new();
+        let service = launchctl::Service::new("srhd", "/usr/local/bin/srhd");
         use Commands::*;
         match cmd {
             Start => service.start().expect("Failed to start service"),
             Stop => service.stop().expect("Failed to stop service"),
             Restart => service.restart().expect("Failed to restart service"),
-            // TODO - make not hardcoded
             Config => println!(".config/srhd/srhd.toml"),
         }
     } else {
