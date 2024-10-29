@@ -5,7 +5,8 @@ background using the native `launchctl` to interact with `launchd` via a plist
 file. Keybinds are configured via toml. 
 
 > [!WARNING]  
-> **SRHD** is still in early development, and is lacking certain features like hot config reloading and comprehensive error messages. I'm working on rolling those out ASAP.  
+> **SRHD** is still in active development, and is lacking certain features like hot config reloading and comprehensive error messages. I'm working on rolling those out ASAP.  
+> There is also currently a bug where if permission are removed while srhd is running as a service the keyboard and mouse will become unresponsive, and a restart is required. 
 
 ## Installation 
 The first time **srhd** starts it will request access to input monitoring.
