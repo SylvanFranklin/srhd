@@ -16,3 +16,4 @@ rdev = { version = "0.5.3", features = ["serialize", "unstable_grab"] }
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8.19"
 clap = { version = "4.5.18", features = ["derive"] }
+launchctl = "0.1.0"

@@ -298,6 +298,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7943c866cc5cd64cbc25b2e01621d07fa8eb2a1a23160ee81ce38704e97b8ecf"
 
 [[package]]
+name = "launchctl"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "177693f79d99c59f4482cf2db252f46c2ae1fe18d45e86be19dfa8c14a917965"
+
+[[package]]
 name = "lazy_static"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -423,6 +429,7 @@ name = "srhd"
 version = "0.3.0"
 dependencies = [
  "clap",
+ "launchctl",
  "rdev",
  "serde",
  "toml",
