@@ -2,7 +2,7 @@
 **S**imple **R**ust **H**otkey **D**aemon is a minimal and lightweight key
 binding service for MacOS similar to **skhd**. It can be run as in the
 background using the native `launchctl` to interact with `launchd` via a plist
-file. Keybinds are configured via toml. 
+file. This functionality has been offloaded to my [launchctl](https://github.com/sylvanfranklin/launchctl) Rust library. 
 
 > [!WARNING]  
 > **SRHD** is still in active development, and is lacking certain features like hot config reloading and comprehensive error messages. I'm working on rolling those out ASAP.  
