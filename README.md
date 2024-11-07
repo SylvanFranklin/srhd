@@ -70,3 +70,7 @@ mods = ["Meta", "Alt"]
 ## Debugging
 stdout and stderr can be found at `/tmp/$USER_srhd.out.log` and
 `/tmp/$USER_srhd.err.log` respecively.
+
+## Contribution
+Contribution is greatly appreciated feel free!
+
