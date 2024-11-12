@@ -1,3 +1,6 @@
+use crate::listener::HeldKeys;
+use std::path::PathBuf;
+
 /// Serialize struct for the purpose of the config file  
 #[derive(serde::Serialize, serde::Deserialize, Debug, PartialEq, Eq)]
 pub enum Mods {
@@ -99,5 +102,3 @@ impl Binding {
     }
 }
 
-use crate::listener::HeldKeys;
-use std::path::PathBuf;
