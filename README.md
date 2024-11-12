@@ -5,8 +5,11 @@ background using the native `launchctl` to interact with `launchd` via a plist
 file. This functionality has been offloaded to my [launchctl](https://github.com/sylvanfranklin/launchctl) Rust library. 
 
 > [!WARNING]  
-> **SRHD** is still in active development, and is lacking certain features like hot config reloading and comprehensive error messages. I'm working on rolling those out ASAP.  
-> There is also currently a bug where if permission are removed while srhd is running as a service the keyboard and mouse will become unresponsive, and a restart is required. 
+> **SRHD** is still in active development, and is lacking certain features like
+> hot config reloading and comprehensive error messages. I'm working on rolling
+> those out ASAP. There is also currently a bug where if permission are removed
+> while srhd is running as a service the keyboard and mouse will become
+> unresponsive, and a restart is required. 
 
 ## Installation 
 The first time **srhd** starts it will request access to input monitoring.
