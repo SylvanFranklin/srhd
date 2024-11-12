@@ -40,7 +40,7 @@ cargo run
 ```
 
 ## Usage
-```rust
+```
 Usage: srhd [COMMAND]
 
 Commands:
