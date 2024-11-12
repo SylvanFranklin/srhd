@@ -1,7 +1,7 @@
 use crate::listener::HeldKeys;
 use std::path::PathBuf;
 
-/// Serialize struct for the purpose of the config file  
+/// Config Values that will be mapped to rdev::Key
 #[derive(serde::Serialize, serde::Deserialize, Debug, PartialEq, Eq)]
 pub enum Mods {
     Command,
@@ -10,7 +10,7 @@ pub enum Mods {
     Option,
 }
 
-/// Serialize struct for the purpose of the config file
+/// Config Values for each binding 
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
 pub struct Binding {
     key: rdev::Key,
@@ -101,4 +101,3 @@ impl Binding {
             .expect("Failed to run command");
     }
 }
-
