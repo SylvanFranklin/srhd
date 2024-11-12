@@ -18,7 +18,7 @@ effect. __Secure Keyboard Entry__ must be disabled in whatever terminal
 emulator **srhd** is started from.
 
 **Homebrew**
-```sh
+```
 brew tap sylvanfranklin/srhd 
 brew install srhd
 srhd start
@@ -26,21 +26,22 @@ srhd start
 
 **Cargo**
 Requires cargo and rust.    
-```sh
+```
 cargo install srhd
 srhd start
 ```
 
 **Source** 
 Requires cargo and rust.    
-```sh
+```
 git clone https://github.com/SylvanFranklin/srhd
 cd srhd 
 cargo run 
 ```
 
 ## Usage
-```rust
+
+```
 Usage: srhd [COMMAND]
 
 Commands:
@@ -55,7 +56,6 @@ Options:
 ```
 
 ## Configuration
-
 For now config is stored at, other options to be added in the future.
 - `$HOME/.config/srhd/srhd.toml`
 
