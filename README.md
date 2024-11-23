@@ -15,7 +15,10 @@ file. This functionality has been offloaded to my [launchctl](https://github.com
 The first time **srhd** starts it will request access to input monitoring.
 After being granted access you must restart the service for the change to take
 effect. __Secure Keyboard Entry__ must be disabled in whatever terminal
-emulator **srhd** is started from.
+emulator **srhd** is started from. In alacritty this process is quite hacky,
+and for some reason requires removing input monitoring in system settings. When
+something stops working I have found that it can mostly be resolved by toggling
+access. 
 
 **Homebrew**
 ```sh
