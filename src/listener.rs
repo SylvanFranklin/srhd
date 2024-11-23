@@ -52,14 +52,14 @@ impl HeldKeys {
             ControlLeft | ControlRight => self.control = is,
             ShiftLeft | ShiftRight => self.shift = is,
             MetaLeft | MetaRight => self.command = is,
-            Alt => self.option = is,
+            Alt | AltGr => self.option = is,
             other if is => self.key = Some(other),
             _ => self.key = None,
         };
     }
 }
 /// Starts the main event loop for the listener
-pub fn srhd_process() {
+pub fn srhd_process(debug: bool) {
     let config = Config::load();
     let keys = Arc::new(Mutex::new(HeldKeys::new()));
     use rdev::{grab, Event};
@@ -76,6 +76,10 @@ pub fn srhd_process() {
                 keys.toggle(key, true);
                 if config.execute_command(&keys) {
                     return None;
+                }
+
+                if debug {
+                    println!("{:?}", key);
                 }
 
                 return Some(event);
