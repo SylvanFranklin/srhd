@@ -1,3 +1,5 @@
+use rdev::GrabError;
+
 use crate::config::{Binding, Config};
 use std::sync::{Arc, Mutex};
 
@@ -89,6 +91,13 @@ pub fn srhd_process(debug: bool) {
     };
 
     if let Err(error) = grab(callback) {
-        println!("Error: {:?}", error)
+        match error {
+            GrabError::EventTapError => {
+                eprintln!("Failed to listen to keys, you may need to re-enable the accessibility settings on your terminal emulator");
+            }
+            _ => {
+                eprintln!("Error: {:?}", error);
+            }
+        }
     }
 }
