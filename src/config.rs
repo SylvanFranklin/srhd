@@ -8,9 +8,11 @@ pub enum Mods {
     Control,
     Shift,
     Option,
+    CapsLock,
+    Fn,
 }
 
-/// Config Values for each binding 
+/// Config Values for each binding
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
 pub struct Binding {
     key: rdev::Key,
@@ -75,7 +77,7 @@ impl Config {
         let raw_file_contents: String = std::fs::read_to_string(&path).unwrap();
         let content = toml::from_str::<Bindings>(&raw_file_contents).unwrap();
 
-        println!("Config loaded sucessfully.");
+        println!("Config loaded successfully.");
         println!("{} Bindings active.", content.bindings.len());
         Config { path, content }
     }

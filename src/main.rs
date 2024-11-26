@@ -21,7 +21,7 @@ enum Commands {
     /// Prints path to the config file. Run `help config` for config options.
     Debug,
     /// Prints out info about the keybindings as they are pressed
-    #[command(long_about = "keybindings...")]
+    #[command(long_about = "")]
     Config,
 }
 
@@ -43,7 +43,7 @@ fn main() {
             Stop => service.stop().expect("Failed to stop service"),
             Restart => service.restart().expect("Failed to restart service"),
             Config => println!(".config/srhd/srhd.toml"),
-            Debug => srhd::listener::srhd_process(true)
+            Debug => srhd::listener::srhd_process(true),
         }
     } else {
         srhd::listener::srhd_process(false);
