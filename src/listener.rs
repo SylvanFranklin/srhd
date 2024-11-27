@@ -8,6 +8,8 @@ pub struct HeldKeys {
     pub control: bool,
     pub shift: bool,
     pub option: bool,
+    pub function: bool,
+    pub capslock: bool,
     pub key: Option<rdev::Key>,
 }
 
@@ -18,6 +20,8 @@ impl HeldKeys {
             control: false,
             shift: false,
             option: false,
+            function: false,
+            capslock: false,
             key: None,
         }
     }
@@ -55,6 +59,8 @@ impl HeldKeys {
             ShiftLeft | ShiftRight => self.shift = is,
             MetaLeft | MetaRight => self.command = is,
             Alt | AltGr => self.option = is,
+            Function => self.function = is,
+            CapsLock => self.capslock = is,
             other if is => self.key = Some(other),
             _ => self.key = None,
         };
