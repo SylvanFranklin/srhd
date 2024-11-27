@@ -18,9 +18,9 @@ enum Commands {
     Stop,
     /// Restart launchctl login service
     Restart,
-    /// Prints path to the config file. Run `help config` for config options.
+    /// Prints out info about the keybindings as they are pressed 
     Debug,
-    /// Prints out info about the keybindings as they are pressed
+    /// Prints path to the config file. Run `help config` for config options.
     #[command(long_about = "")]
     Config,
 }
