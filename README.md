@@ -76,24 +76,27 @@ key = "equals"
 command = "echo 'hello from srhd'"
 mods = ["control", "fn", "capslock"]
 ```
-****
+**Keys**
+Below are some common keys that you may want to use in your config. The best
+way to find out the code for a key is to run `srhd debug` and press the key in
+question.
 
-Minus,
-Equal,
-LeftBracket,
-RightBracket,
-SemiColon,
-Quote,
-BackSlash,
-IntlBackslash,
-Comma,
-Dot,
-Slash,
-Insert,
-
+```
+minus,
+equal,
+leftbracket,
+rightbracket,
+semicolon,
+quote,
+backslash,
+comma,
+dot,
+slash,
+insert
+```
 ## Debugging
 stdout and stderr can be found at `/tmp/$USER_srhd.out.log` and
-`/tmp/$USER_srhd.err.log` respecively.
+`/tmp/$USER_srhd.err.log` respecively.  
 
 ## Contribution
 Contribution is greatly appreciated feel free!
