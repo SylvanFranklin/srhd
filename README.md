@@ -15,10 +15,9 @@ file. This functionality has been offloaded to my [launchctl](https://github.com
 The first time **srhd** starts it will request access to input monitoring.
 After being granted access you must restart the service for the change to take
 effect. __Secure Keyboard Entry__ must be disabled in whatever terminal
-emulator **srhd** is started from. In alacritty this process is quite hacky,
-and for some reason requires removing input monitoring in system settings. When
-something stops working I have found that it can mostly be resolved by toggling
-access. 
+emulator **srhd** is started from. In some cases if you update **srhd** or the
+terminal emulator that is is started from, you may have to reset the
+permissions in system settings.
 
 **Homebrew**
 ```sh
@@ -35,26 +34,25 @@ srhd start
 ```
 
 **Source** 
-Requires cargo and rust.    
+Requires Cargo and Rust.    
 ```sh
 git clone https://github.com/SylvanFranklin/srhd
 cd srhd 
-cargo run 
+cargo build --release 
+target/release/srhd
 ```
 
 ## Usage
 ```
-Usage: srhd [COMMAND]
+srhd [COMMAND]
 
 Commands:
-  start    Start launchctl login service
-  stop     Stop launchctl login service
-  restart  Restart the service
+  start    Start launchctl login service via launchctl
+  stop     Stop launchctl login service via launchctl
+  restart  Restart launchctl login service via launchctl
+  debug    Prints out info about the keybindings as they are pressed
+  config   Prints path to the config file. Run `help config` for config options
   help     Print this message or the help of the given subcommand(s)
-
-Options:
-  -h, --help     Print help
-  -V, --version  Print version
 ```
 
 ## Configuration
@@ -62,7 +60,8 @@ Options:
 For now config is stored at, other options to be added in the future.
 - `$HOME/.config/srhd/srhd.toml`
 
-An empty config file will be created automatically the first time **srhd** is started.
+An empty config file will be created automatically the first time **srhd** is
+started.
 
 **Example Config:** 
 ```toml
@@ -74,11 +73,11 @@ mods = ["command", "option", "shift"]
 
 [[binding]]
 key = "equals"
-command = "open /Applications/Firefox.app" # or any arbitrary shell script
+command = "echo 'hello from srhd'"
 mods = ["control", "fn", "capslock"]
-
-
 ```
+
+
 
 ## Debugging
 stdout and stderr can be found at `/tmp/$USER_srhd.out.log` and
