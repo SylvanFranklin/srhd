@@ -21,7 +21,10 @@ enum Commands {
     /// Prints out info about the keybindings as they are pressed
     Debug,
     /// Prints path to the config file. Run `help config` for config options.
-    #[command(long_about = "")]
+    #[command(long_about = "
+Creates a new config file, or prints info about the active one.
+The configuration scheme is detailed at https://github.com/sylvanfranklin/srhd
+    ")]
     Config,
 }
 
