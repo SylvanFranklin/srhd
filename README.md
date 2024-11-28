@@ -67,7 +67,7 @@ started.
 ```toml
 # srhd.toml
 [[binding]]
-key = "A"
+key = "a"
 command = "open /Applications/Firefox.app" # or any arbitrary shell script
 mods = ["command", "option", "shift"]
 
@@ -76,8 +76,20 @@ key = "equals"
 command = "echo 'hello from srhd'"
 mods = ["control", "fn", "capslock"]
 ```
+****
 
-
+Minus,
+Equal,
+LeftBracket,
+RightBracket,
+SemiColon,
+Quote,
+BackSlash,
+IntlBackslash,
+Comma,
+Dot,
+Slash,
+Insert,
 
 ## Debugging
 stdout and stderr can be found at `/tmp/$USER_srhd.out.log` and
