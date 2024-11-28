@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 #[derive(Debug, serde::Serialize, serde::Deserialize, Clone, Copy)]
 /// Custom macOS key names for the config file
+#[serde(rename_all = "lowercase")]
 pub enum Key {
     // letters
     A,
