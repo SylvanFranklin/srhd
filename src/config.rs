@@ -1,9 +1,7 @@
 use crate::listener::HeldKeys;
-use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-#[derive(strum::Display, Debug, serde::Serialize, serde::Deserialize)]
-#[strum(serialize_all = "lowercase")]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, Copy)]
 /// Custom macOS key names for the config file
 pub enum Key {
     // letters
@@ -222,6 +220,7 @@ impl Into<rdev::Key> for Key {
 
 /// Config Values that will be mapped to rdev::Key
 #[derive(serde::Serialize, serde::Deserialize, Debug, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
 pub enum Mods {
     Command,
     Control,
@@ -248,7 +247,7 @@ impl Into<HeldKeys> for &Binding {
             option: self.mods.contains(&Mods::Option),
             function: self.mods.contains(&Mods::Fn),
             capslock: self.mods.contains(&Mods::CapsLock),
-            key: Some(self.key),
+            key: Some(self.key.into()),
         }
     }
 }
@@ -269,7 +268,7 @@ impl Config {
     /// always called internally, creates a new config file
     fn create_new_file(path: &PathBuf) -> Result<Vec<Binding>, std::io::Error> {
         let base_config: Vec<Binding> = vec![Binding {
-            key: rdev::Key::KeyL,
+            key: Key::L,
             command: "echo 'Hello World'".to_string(),
             mods: vec![Mods::Shift, Mods::Control],
         }];
