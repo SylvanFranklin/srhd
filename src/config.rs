@@ -1,4 +1,5 @@
 use crate::listener::HeldKeys;
+use core::panic;
 use std::path::PathBuf;
 
 #[derive(Debug, serde::Serialize, serde::Deserialize, Clone, Copy)]
@@ -295,8 +296,10 @@ impl Config {
         }
 
         let raw_file_contents: String = std::fs::read_to_string(&path).unwrap();
-        let content: Bindings =
-            toml::from_str::<Bindings>(&raw_file_contents).expect("Failed to parse config file");
+        let content: Bindings = match toml::from_str::<Bindings>(&raw_file_contents) {
+            Ok(val) => val,
+            Err(err) => panic!("{}", err.message()),
+        };
 
         println!("Config loaded successfully.");
         println!("{} Bindings active.", content.bindings.len());
