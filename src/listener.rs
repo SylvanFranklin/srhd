@@ -87,6 +87,7 @@ pub fn srhd_process(debug: bool) {
                 }
 
                 if debug {
+                    // TODO use an into cast to print the correct keys
                     println!("{:?}", key);
                 }
 
