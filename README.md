@@ -68,9 +68,16 @@ An empty config file will be created automatically the first time **srhd** is st
 ```toml
 # srhd.toml
 [[binding]]
-key = "KeyA"
+key = "A"
 command = "open /Applications/Firefox.app" # or any arbitrary shell script
-mods = ["Meta", "Alt"]
+mods = ["command", "option", "shift"]
+
+[[binding]]
+key = "equals"
+command = "open /Applications/Firefox.app" # or any arbitrary shell script
+mods = ["control", "fn", "capslock"]
+
+
 ```
 
 ## Debugging
