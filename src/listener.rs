@@ -88,7 +88,7 @@ pub fn srhd_process(debug: bool) {
 
                 if debug {
                     let db: Key = key.into();
-                    println!("{:?}", db);
+                    println!("{}", db);
                 }
 
                 return Some(event);

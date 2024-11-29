@@ -2,9 +2,10 @@ use crate::listener::HeldKeys;
 use core::panic;
 use std::path::PathBuf;
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, Copy)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, Copy, strum::Display)]
 /// Custom macOS key names for the config file
 #[serde(rename_all = "lowercase")]
+#[strum(serialize_all = "lowercase")]
 pub enum Key {
     // letters
     A,
