@@ -96,11 +96,10 @@ insert
 ```
 ## Debugging
 stdout and stderr can be found at `/tmp/$USER_srhd.out.log` and
-`/tmp/$USER_srhd.err.log` respecively. Running `srhd debug` can help resolve
+`/tmp/$USER_srhd.err.log` respectively. Running `srhd debug` can help resolve
 issues with keys not matching up in the way that you expect. Most issues with
 srhd not working are related to permissions and may sometimes require removing
-and re-adding srhd from accesssibility permissions.
+and re-adding srhd from accessibility permissions.
 
 ## Contribution
 Contribution is greatly appreciated feel free!
-
