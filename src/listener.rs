@@ -1,6 +1,6 @@
 use rdev::GrabError;
 
-use crate::config::{Binding, Config};
+use crate::config::{Binding, Config, Key};
 use std::sync::{Arc, Mutex};
 
 pub struct HeldKeys {
@@ -87,8 +87,8 @@ pub fn srhd_process(debug: bool) {
                 }
 
                 if debug {
-                    // TODO use an into cast to print the correct keys
-                    println!("{:?}", key);
+                    let db: Key = key.into();
+                    println!("{:?}", db);
                 }
 
                 return Some(event);
