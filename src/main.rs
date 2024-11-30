@@ -34,10 +34,9 @@ fn main() {
     // When started as a daemon, this will pass right through to the else
     // block, since there are no arguments passed via the plist file
     if let Some(cmd) = args.cmd {
-        let service = launchctl::Service::new(
-            "com.sylvanfranklin.srhd",
-            PathBuf::from(std::env::current_exe().unwrap()),
-        );
+        let service = launchctl::Service::builder()
+            .name("com.sylvanfranklin.srhd")
+            .build();
         srhd::service::install(&service).unwrap();
 
         use Commands::*;

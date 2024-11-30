@@ -32,7 +32,8 @@ pub fn install(ctl: &launchctl::Service) -> Result<(), Error> {
 </dict>
 </plist>",
         ctl.name,
-        ctl.bin_path.to_str().unwrap(),
+        // this right here is just ass
+        std::env::current_exe().unwrap().to_str().unwrap()
     );
 
     Ok(fs::write(ctl.plist_path.clone(), plist)?)
