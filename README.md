@@ -17,7 +17,8 @@ After being granted access you must restart the service for the change to take
 effect. __Secure Keyboard Entry__ must be disabled in whatever terminal
 emulator **srhd** is started from. In some cases if you update **srhd** or the
 terminal emulator that is is started from, you may have to reset the
-permissions in system settings.
+permissions in system settings. You may also have to give your terminal emulator full disk ascess for some reason, I swear I'm not scamming you though, look through the code yourself.
+
 
 **Homebrew**
 ```sh
