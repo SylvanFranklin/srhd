@@ -4,12 +4,11 @@ binding service for MacOS similar to **skhd**. It can be run as in the
 background using the native `launchctl` to interact with `launchd` via a plist
 file. This functionality has been offloaded to my [launchctl](https://github.com/sylvanfranklin/launchctl) Rust library. 
 
-> [!WARNING]  
-> **SRHD** is still in active development, and is lacking certain features like
-> hot config reloading and comprehensive error messages. I'm working on rolling
-> those out ASAP. There is also currently a bug where if permission are removed
-> while srhd is running as a service the keyboard and mouse will become
-> unresponsive, and a restart is required. 
+> [!WARNING]
+> **WHY??** We have skhd, hammerspoon, aerospace, why use srhd? I don't claim
+> this idea as original, nor do I claim that this project is in any way better
+> than the others. The one up is that you can install it with cargo and it
+> feels Rusty with the toml file, but that's about it. 
 
 ## Installation 
 The first time **srhd** starts it will request access to input monitoring.
@@ -95,6 +94,14 @@ dot,
 slash,
 insert
 ```
+
+> [!WARNING]  
+> **SRHD** is still in active development, and is lacking certain features like
+> hot config reloading and comprehensive error messages. I'm working on rolling
+> those out ASAP. There is also currently a bug where if permission are removed
+> while srhd is running as a service the keyboard and mouse will become
+> unresponsive, and a restart is required. 
+
 ## Debugging
 stdout and stderr can be found at `/tmp/$USER_srhd.out.log` and
 `/tmp/$USER_srhd.err.log` respectively. Running `srhd debug` can help resolve

@@ -393,7 +393,10 @@ impl Config {
             "[[bindings]]\nkey = \"KeyL\"\ncommand = \"echo 'hello world'\"\nmods = [\"Shift\", \"Control\"]";
 
         // create the directory
-        std::fs::create_dir_all(path.parent().unwrap())?;
+        std::fs::create_dir_all(
+            path.parent()
+                .expect("Config home is not a complete directory"),
+        )?;
         std::fs::write(path, raw_toml_string)?;
         Ok(base_config)
     }
@@ -402,12 +405,20 @@ impl Config {
     pub fn load() -> Config {
         // define the path right away, this can be used for the rest of the creation process, since
         // it's on the top level and will be handed down.
-        let path: PathBuf =
-            PathBuf::from(std::env::var("HOME").unwrap()).join(".config/srhd/srhd.toml");
+        let home = match std::env::var("HOME") {
+            Ok(v) => v,
+            Err(e) => panic!("Could not located home, {:?}", e),
+        };
+
+        let path: PathBuf = PathBuf::from(home).join(".config/srhd/srhd.toml");
 
         if !path.exists() {
-            println!("Creating new config");
-            Config::create_new_file(&path).unwrap();
+            println!("No config foung");
+            println!("Creating new config...");
+            match Config::create_new_file(&path) {
+                Ok(_s) => println!("Created at {}", path.display()),
+                Err(e) => panic!("{}", e),
+            }
         }
 
         let raw_file_contents: String = std::fs::read_to_string(&path).unwrap();
