@@ -66,12 +66,12 @@ started.
 **Example Config:** 
 ```toml
 # srhd.toml
-[[binding]]
+[[bindings]]
 key = "a"
 command = "open /Applications/Firefox.app" # or any arbitrary shell script
 mods = ["command", "option", "shift"]
 
-[[binding]]
+[[bindings]]
 key = "equals"
 command = "echo 'hello from srhd'"
 mods = ["control", "fn", "capslock"]
