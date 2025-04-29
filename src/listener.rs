@@ -66,6 +66,11 @@ impl HeldKeys {
         };
     }
 }
+
+fn lock() {
+    let lock_file = std::fs::File::create("/tmp/srhd.pid");
+}
+
 /// Starts the main event loop for the listener
 pub fn srhd_process(debug: bool) {
     let config = Config::load();

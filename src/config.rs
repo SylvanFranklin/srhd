@@ -405,6 +405,7 @@ impl Config {
     pub fn load() -> Config {
         // define the path right away, this can be used for the rest of the creation process, since
         // it's on the top level and will be handed down.
+
         let home = match std::env::var("HOME") {
             Ok(v) => v,
             Err(e) => panic!("Could not located home, {:?}", e),
