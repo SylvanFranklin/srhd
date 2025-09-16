@@ -1,4 +1,8 @@
 # SRHD
+
+ENTIRE PROJECT SUCKS, PLEASE FIX
+
+
 **S**imple **R**ust **H**otkey **D**aemon is a minimal and lightweight key
 binding service for MacOS similar to **skhd**. It can be run as in the
 background using the native `launchctl` to interact with `launchd` via a plist
